@@ -1,0 +1,13 @@
+[requires]
+drogon/1.8.7
+jsoncpp/1.9.5
+
+[options]
+drogon*:with_ctl=True
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout

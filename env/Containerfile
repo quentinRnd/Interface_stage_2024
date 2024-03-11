@@ -1,0 +1,16 @@
+# The Linux distribution is debian 12 from docker.io
+FROM docker.io/debian:12
+
+# Take user ID as argument
+ARG UID
+
+# Initialize build
+RUN /media/user/build/initialize.sh $UID
+
+# Set container user and working directory
+USER user
+WORKDIR /media/user/app
+
+# User set up
+RUN /media/user/build/packages.sh
+RUN /media/user/build/utilities.sh

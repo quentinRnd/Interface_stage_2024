@@ -1,0 +1,89 @@
+/*@import "debug.css";*/
+
+:root
+{
+	--cell-size: 51px;
+}
+
+.solve-button
+{
+	width: 280px;
+}
+
+.full-height
+{
+	height: 100%;
+}
+
+.empty-cell
+{
+	border: 0 !important;
+}
+
+.horizontal-cell
+{
+	width: var(--cell-size);
+}
+
+.vertical-cell
+{
+	height: var(--cell-size);
+}
+
+.vertical-cell.horizontal-cell:hover
+{
+	background-color: rgb(235, 235, 235);
+}
+
+.vertical-text
+{
+	writing-mode: vertical-lr;
+	transform: rotate(-180deg);
+}
+
+.vertical-center
+{
+	vertical-align: middle !important;
+}
+
+.horizontal-center
+{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.select-size
+{
+	width: 150px;
+}
+
+.in-line
+{
+	display: flex;
+}
+
+.constraint
+{
+	font-family: 'Courier New';
+	font-weight: bold;
+}
+
+.scrollable-table
+{
+	width: fit-content;
+	overflow: auto;
+	max-height: 48em;
+}
+
+.scrollable-table table 
+{
+	border-collapse: separate;
+}
+
+.scrollable-table table thead
+{
+	position: sticky;
+	top: 0;
+	background-color: white;
+	z-index: 1;
+}

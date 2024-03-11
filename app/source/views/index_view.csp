@@ -1,0 +1,50 @@
+<%c++ // Only view of chrppi %>
+
+<%inc
+	#include "../source/config.hh"
+%>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>Optimisation de chemin</title>
+
+		<link rel="stylesheet" href="third-party/bulma/css/bulma.min.css" />
+		<link rel="stylesheet" href="third-party/fontawesome/css/fontawesome.css" />
+		<link rel="stylesheet" href="third-party/fontawesome/css/solid.css" />
+		<link rel="stylesheet" href="css/main.css" />
+
+		
+		<script src="https://d3js.org/d3.v5.min.js"></script>
+		<script defer type="module" src="js/main.js"></script>
+	
+	</head>
+
+	<body>
+		<div class="columns is-mobile is-centered has-text-centered">
+			<div class="column ">
+				<fieldset>
+					<p class="control">
+						<input type="file" id="{% config::html::input_csv_data %}" hidden />
+						<button class="button" type="button" id="{% config::html::button_csv_data %}">
+							<span class="icon is-small">
+								<i class="fas fa-upload"></i>
+							</span>
+							<span>Selectionner votre Instance a résoudre</span>
+						</button>
+					</p>
+				</fieldset>
+			</div>
+		</div>
+		<div class="columns is-mobile is-centered has-text-centered">
+			<div class="column ">
+				<div class="block" id="{% config::html::div_solution_display %}"></div>
+			</div>
+		</div>
+
+		
+	</body>
+</html>
