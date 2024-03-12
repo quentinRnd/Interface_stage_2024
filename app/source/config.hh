@@ -54,6 +54,22 @@ namespace config
 		
 		// id div where solution are display
 		const std::string div_solution_display("div_solution_display");
+
+		//input file et button pour que l'utilisateur puisse visualiser une solution qu'il a déjà calculer précedement
+		const std::string input_solution_json("input_solution_json");
+		const std::string button_solution_json("button_solution_json");
+
+		//boutton qui permet de télecharge les solutions de l'instance visualisée
+		const std::string button_download_solution("button_download_solution");
+
+		//identifiant dans la session html ou on stocke le fichier json des solution a télécharger
+		const std::string stockage_solution_session("stockage_solution_session");
 		
+		//statut du solver qui permet de retirer ou de mettre cette element en hidden 
+		const std::string status_solve("status_solve");
+
+		//sert a mettre du texte ou une liste d'erreur
+		const std::string status_display("status_display");
+		 
 	}
 };

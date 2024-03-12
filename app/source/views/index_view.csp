@@ -24,6 +24,10 @@
 	</head>
 
 	<body>
+		<div class="columns is-mobile is-centered has-text-centered is-hidden"  id="{%config::html::status_solve%}">
+			<div class="column" id="{%config::html::status_display%}">
+			</div>
+		</div>
 		<div class="columns is-mobile is-centered has-text-centered">
 			<div class="column ">
 				<fieldset>
@@ -33,16 +37,33 @@
 							<span class="icon is-small">
 								<i class="fas fa-upload"></i>
 							</span>
-							<span>Selectionner votre Instance a résoudre</span>
+							<span>select your instance to solve</span>
 						</button>
 					</p>
 				</fieldset>
 			</div>
+			<div class="column">
+				<p class="control">
+					<input type="file" id="{% config::html::input_solution_json %}" hidden />
+					<button class="button" type="button" id="{% config::html::button_solution_json %}">
+						<span class="icon is-small">
+							<i class="fas fa-upload"></i>
+						</span>
+						<span>select your solution to display</span>
+					</button>
+				</p>
+			</div>
 		</div>
 		<div class="columns is-mobile is-centered has-text-centered">
 			<div class="column ">
-				<div class="block" id="{% config::html::div_solution_display %}"></div>
+				<div class="block">
+					<button  class="button is-hidden" id="{%config::html::button_download_solution%}"  >Download your solutions</button>
+				</div>
+				<div class="block" id="{% config::html::div_solution_display %}">
+				</div>
+				
 			</div>
+			
 		</div>
 
 		

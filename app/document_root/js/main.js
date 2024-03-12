@@ -1,7 +1,20 @@
 import {id}from "./id.js"
+
+function add_erreur(erreur)
+{
+	let status=document.getElementById(id.status_display)
+	let p=document.createElement("p")
+	p.textContent=erreur
+	status.appendChild(p)
+}
+
 // This method is responsible for drawing the graph, returns the drawn network
 function drawGraph(dataJson) {
-	console.log(dataJson)
+	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
+	
+	//offre la possibilitée de telecharger le json solution
+	document.getElementById(id.button_download_solution).classList.remove("is-hidden")
+	
 	let solution=dataJson[id.key_json_solution]
 	let solution_proposer=solution[id.Solutions_key][solution[id.Solutions_key].length-1]
 	let data_x=solution[id.Coordonee_pdi_x_key]
@@ -9,8 +22,11 @@ function drawGraph(dataJson) {
 	let depart=solution_proposer[id.Start_pdi_key]
 	let taille_rayon=20
 	let arc =solution_proposer[id.Arc_key]
+	let presence_pdi=solution_proposer[id.Presence_pdi_key]
 	let width=0
 	let height=0
+
+	console.log(solution)
 
 	// ces offset serve pour les graphe avec des valeurs négative
 	let offsetx=0
@@ -21,11 +37,19 @@ function drawGraph(dataJson) {
 
 	for(let i=0;i<data_x.length;++i)
 	{
+		if(depart[depart_circuit]>depart[i] && presence_pdi[i])
+		{
+			depart_circuit=i
+		}
+		if(depart[arriver_circuit]<depart[i] && presence_pdi[i])
+		{
+			arriver_circuit=i
+		}
+
 		if(data_x[i]<offsetx)
 		{
 			offsetx=data_x[i]
 		}
-		if(depart[i])
 		if(data_y[i]<offsety)
 		{
 			offsety=data_y[i]
@@ -84,12 +108,12 @@ function drawGraph(dataJson) {
 	{		
 		let x=data_x[i]
 		let y=data_y[i]
-		console.log(x,y)
+
 		svg.append("circle")
 		.attr("cx",x )
 		.attr("cy", y)
 		.attr("opacity", 0.5)
-		.attr("fill", "green")
+		.attr("fill", (i==depart_circuit?"blue":(i==arriver_circuit?"red":(presence_pdi[i]?"green":"white"))))
 		.attr("r", taille_rayon);
 		
 		svg.append("text")
@@ -107,17 +131,22 @@ function drawGraph(dataJson) {
 			.text("PDI : "+i);
 	}
 
+
+	//document.getElementById(id.button_solution_json).classList.remove("is-hidden")
 	
 }
 
 function display_solution(dataJson)
 {
 	console.log("display solution")
+	console.log(dataJson)
+	
 	var solution_display=document.getElementById(id.div_solution_display)
 	while(solution_display.hasChildNodes())
 	{
 		solution_display.removeChild(solution_display.firstChild)
 	}
+
 	
 	drawGraph(dataJson)
 
@@ -144,7 +173,7 @@ function sendData(Formdata) {
 													display_solution(data)
 													//console.log(data)
 						  								}
-											).catch(err=>console.log("error parsing the response json"))
+											).catch(err=>console.log("error parsing the response json",err))
 			 )
 		.catch(err => console.error(err))
 	;
@@ -156,6 +185,20 @@ function FormDataDefault()
 	formdata.append(id.ajax_request,true)
 	return formdata
 }
+//thing to do when you send a csv to solve
+function sendCsvAnimation()
+{
+
+	document.getElementById(id.button_download_solution).classList.add("is-hidden")
+
+	var solution_display=document.getElementById(id.div_solution_display)
+	while(solution_display.hasChildNodes())
+	{
+		solution_display.removeChild(solution_display.firstChild)
+	}
+	document.getElementById(id.status_solve).classList.add("is-hidden")
+
+}
 
 //event to trigger the load of an csv data by the user
 document.getElementById(id.input_csv_data).addEventListener("change",(e)=>{
@@ -163,7 +206,7 @@ document.getElementById(id.input_csv_data).addEventListener("change",(e)=>{
 	let formData=FormDataDefault()
 	formData.append(id.ajax_file_csv,true)
 	formData.append("file",file)
-	
+	sendCsvAnimation()
 	sendData(formData) 
 
 })
@@ -171,4 +214,50 @@ document.getElementById(id.input_csv_data).addEventListener("change",(e)=>{
 //event to trigger the input file hidden
 document.getElementById(id.button_csv_data).addEventListener("click",(e)=>{
 	document.getElementById(id.input_csv_data).click()
+})
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+}
+
+//event to dowload the solution.json
+document.getElementById(id.button_download_solution).addEventListener("click",(e)=>{
+	let json=sessionStorage.getItem(id.stockage_solution_session)
+	if(json!=null)
+	{
+		download(json,"solution.json","application/json")
+	}else{
+		//creer une erreur
+	}
+})
+
+
+
+
+document.getElementById(id.input_solution_json).addEventListener("change",(e)=>{
+	let file=e.target.files[0]
+    let read = new FileReader();
+
+	read.readAsBinaryString(file);
+
+	read.onloadend = function(){
+		let json ={}
+
+		json[id.key_json_solution]=JSON.parse(read.result)
+
+		sendCsvAnimation()
+
+		drawGraph(json)
+	}
+
+	//drawGraph(JSON.parse(file)) 
+})
+
+//event to import solution json to display the solution
+document.getElementById(id.button_solution_json).addEventListener("click",(e)=>{
+	document.getElementById(id.input_solution_json).click()
 })

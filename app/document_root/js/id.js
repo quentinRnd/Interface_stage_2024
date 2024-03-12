@@ -32,4 +32,21 @@ export const id={
     ,Start_pdi_key:"Start_pdi"
     //cle pour recupéré les arc des differente solution
     ,Arc_key:"Arc"
+
+    //input file et button pour que l'utilisateur puisse visualiser une solution qu'il a déjà calculer précedement
+	,input_solution_json:"input_solution_json"
+	,button_solution_json:"button_solution_json"
+	
+    //boutton qui permet de télecharge les solutions de l'instance visualisée
+	,button_download_solution:"button_download_solution"
+	
+    //identifiant dans la session html ou on stocke le fichier json des solution a télécharger
+	,stockage_solution_session:"stockage_solution_session"
+
+    //statut du solver 
+	,status_solve:"status_solve"
+
+    //sert a mettre du texte ou une liste d'erreur
+	,status_display:"status_display"
+		
 }
