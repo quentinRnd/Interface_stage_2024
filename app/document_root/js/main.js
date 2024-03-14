@@ -1,5 +1,7 @@
 import {id}from "./id.js"
 
+import * as d3 from "https://cdn.skypack.dev/d3@7.6.1";
+//import * as d3 from "../third-party/D3/d3.v7.min.js";
 function add_erreur(erreur)
 {
 	let status=document.getElementById(id.status_display)
@@ -7,7 +9,6 @@ function add_erreur(erreur)
 	p.textContent=erreur
 	status.appendChild(p)
 }
-
 // This method is responsible for drawing the graph, returns the drawn network
 function drawGraph(dataJson) {
 	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
@@ -60,13 +61,16 @@ function drawGraph(dataJson) {
 	let offsetdefault=10
 	offsetx+= offsetdefault
 	offsety+= offsetdefault
+	//sert a scale la figure pour mieux voire les donnée
+	let scale=10
+
 	for(let i=0;i<data_x.length;++i)
 	{
 		data_x[i]+=offsetx
 		data_y[i]+=offsety
 
-		data_x[i]*=10
-		data_y[i]*=10
+		data_x[i]*=scale
+		data_y[i]*=scale
 
 	}
 
@@ -82,10 +86,14 @@ function drawGraph(dataJson) {
 		}
 
 	}
-	var svg = d3.select("#"+id.div_solution_display).append("svg")
+	/*var svg = d3.select("#"+id.div_solution_display).append("svg")
             .attr("width", width+100)
             .attr("height", height+100)
-            .style('background-color', 'lightgrey')
+            .style('background-color', 'lightgrey')*/
+	var svg = d3.select("#"+id.div_solution_display).append("svg")
+		.attr('viewBox',`0 0 ${width+50} ${height+50}` )
+        .attr('preserveAspectRatio','xMinYMin')
+		.style('background-color', 'lightgrey');
 	
 	
 	for(let i=0;i<data_x.length;++i)
@@ -130,10 +138,6 @@ function drawGraph(dataJson) {
 			.style("font-size", 19)
 			.text("PDI : "+i);
 	}
-
-
-	//document.getElementById(id.button_solution_json).classList.remove("is-hidden")
-	
 }
 
 function display_solution(dataJson)
@@ -261,3 +265,16 @@ document.getElementById(id.input_solution_json).addEventListener("change",(e)=>{
 document.getElementById(id.button_solution_json).addEventListener("click",(e)=>{
 	document.getElementById(id.input_solution_json).click()
 })
+
+function onload()
+{
+	var solution=sessionStorage.getItem(id.stockage_solution_session)
+	if(solution!=null)
+	{
+		sendCsvAnimation()
+		let json =JSON.parse(solution)
+		drawGraph(json)
+		console.log()
+	}
+}
+onload()

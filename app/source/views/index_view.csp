@@ -18,7 +18,6 @@
 		<link rel="stylesheet" href="css/main.css" />
 
 		
-		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script defer type="module" src="js/main.js"></script>
 	
 	</head>
@@ -55,7 +54,7 @@
 			</div>
 		</div>
 		<div class="columns is-mobile is-centered has-text-centered">
-			<div class="column ">
+			<div class="column is-four-fifths">
 				<div class="block">
 					<button  class="button is-hidden" id="{%config::html::button_download_solution%}"  >Download your solutions</button>
 				</div>
