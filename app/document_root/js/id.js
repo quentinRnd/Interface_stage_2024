@@ -12,6 +12,10 @@ export const id={
     //identifiant qui permet d'afficher le 
     ,div_solution_display:"div_solution_display"
 
+    // id to put in the formdata the different parameters of the modele
+    ,formdataparameter:"parameters"
+    
+
     //clé pour les solution trouver par le pycsp3
     ,key_error_array:"errors"
     // clé pour les erreur rencontré lors de l'éxecuition du main controleur dans le json renvoyer
@@ -31,7 +35,7 @@ export const id={
     //#cle pour savoir l'heure de départ des pdi
     ,Start_pdi_key:"Start_pdi"
     //cle pour recupéré les arc des differente solution
-    ,Arc_key:"Arc"
+    ,Circuit_key:"Circuit"
 
     //input file et button pour que l'utilisateur puisse visualiser une solution qu'il a déjà calculer précedement
 	,input_solution_json:"input_solution_json"
@@ -48,5 +52,34 @@ export const id={
 
     //sert a mettre du texte ou une liste d'erreur
 	,status_display:"status_display"
-		
+
+    ,tab_id:
+    {
+        config_search_tab:"config_search_tab"
+        ,solution_tab:"solution_tab"
+    }
+    ,tab_content:
+    {
+        search_config:"search_config"
+        ,vizualize_solution:"vizualize_solution"
+    }
+
+    ,button_check_parameters:"button_check_parameters"
+
+    ,search_parameter:{
+        preference_nature:"preference_nature"
+        ,preference_ville:"preference_ville"
+        ,timeout_solver:"timeout_solver"
+        ,preference_elevation:"preference_elevation"
+        ,preference_foret:"preference_foret"
+        ,preference_lac:"preference_lac"
+        ,preference_riviere:"preference_riviere"
+        ,distance_Min:"distance_Min"
+        ,distance_Max:"distance_Max"
+        ,budget_Max:"budget_Max"
+        ,nombre_visite_min:"nombre_visite_min"
+        ,nombre_visite_max:"nombre_visite_max"
+        ,max_temps_visite:"max_temps_visite"
+    }
+    ,erreur_page:"erreur_page"
 }

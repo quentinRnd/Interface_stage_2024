@@ -3,15 +3,16 @@
 
 #include <fstream>
 
-#include <jsoncpp/json/json.h>
-#include <jsoncpp/json/value.h>
+
+#include<json/value.h>
+#include<json/json.h>
 
 /*
 fonction qui sert a retourner la commande utiliser pour executer le stricpt python qui résout les csp
 */
 std::string commande_python_csp(std::string const& nom_fichier_instance)
 {
-	return "python3 "+config::python_config::path_to_csp+"/Modele1.py -f "+nom_fichier_instance;
+	return "python3 "+config::python_config::path_to_csp+"/Modele4.py --f "+nom_fichier_instance;
 }
 
 void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::function<void(const drogon::HttpResponsePtr &)> && callback)
@@ -37,14 +38,70 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				
 			}else{
 				std::string nom_instance(req->session()->sessionId());
-				files.front().saveAs("./"+config::python_config::path_to_csp+"/"+config::python_config::path_instance+"/"+nom_instance+".csv");
+				files.front().saveAs("./"+config::python_config::path_to_csp+"/"+config::python_config::path_instance+"/"+nom_instance+".json");
+				
+				/*
+				modifier les paramètre de recherche en fonction des utilisateurs.ices
+				*/
+				//int timeout_solver(std::stoi(req_parameter.find(config::json_response::formdataparameter)));
+				Json::Value parameter_json;
+				Json::Reader reader;
+
+				reader.parse(req_parameter.find(config::json_response::formdataparameter)->second,parameter_json);
+				std::cout << parameter_json<< std::endl;
+				
+				std::ifstream settings_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_settings+"/"+config::python_config::settings_choose+".json");
+  				std::ifstream profile_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_profil_marcheur+"/"+config::python_config::profil_choose+".json");
+  				
+
+				Json::Value settings_json,profile_json;
+
+				reader.parse(settings_default_file, settings_json);
+				reader.parse(profile_default_file, profile_json);
+				
+				std::string nom_fichier_perso(nom_instance+".json");
+
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::foret_key]=parameter_json[config::html::preference_util::preference_foret];
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::nature_key]=parameter_json[config::html::preference_util::preference_nature];
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::lac_key]=parameter_json[config::html::preference_util::preference_lac];
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::elevation_key]=parameter_json[config::html::preference_util::preference_elevation];
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::riviere_key]=parameter_json[config::html::preference_util::preference_riviere];
+				profile_json[config::profile_marcheureuse::preference_marche_key][config::profile_marcheureuse::ville_key]=parameter_json[config::html::preference_util::preference_ville];
+
+				profile_json[config::profile_marcheureuse::budget_max_key]=parameter_json[config::html::preference_util::budget_Max];
+				profile_json[config::profile_marcheureuse::distance_parcourue_max_key]=parameter_json[config::html::preference_util::distance_Max];
+				profile_json[config::profile_marcheureuse::distance_parcourue_min_key]=parameter_json[config::html::preference_util::distance_Min];
+				profile_json[config::profile_marcheureuse::Temps_max_visite_key]=parameter_json[config::html::preference_util::max_temps_visite];
+				profile_json[config::profile_marcheureuse::Max_visite_pdi_key]=parameter_json[config::html::preference_util::nombre_visite_max];
+				profile_json[config::profile_marcheureuse::Min_visite_pdi_key]=parameter_json[config::html::preference_util::nombre_visite_min];
+
+				settings_json[config::settingsjson::inter_solution_key]=true;
+				settings_json[config::settingsjson::solution_algo_custom_key]=true;
+				settings_json[config::settingsjson::type_objectif_inter_solution]=config::settingsjson::Maximise_score_chemin;
+				settings_json[config::settingsjson::type_objectif_key]=config::settingsjson::Maximise_chemin_pdi;
+				settings_json[config::settingsjson::profile_marcheureuse_choisie_key]=nom_instance+".json";
+				
+
+				
+
+				std::ofstream settings_perso_file(config::python_config::path_to_csp+"/"+config::python_config::path_settings+"/"+nom_fichier_perso,std::ios::trunc);
+  				std::ofstream profile_perso_file(config::python_config::path_to_csp+"/"+config::python_config::path_profil_marcheur+"/"+nom_fichier_perso,std::ios::trunc);
+  				
+				settings_perso_file << settings_json;
+				profile_perso_file << profile_json;
+				
+				
+
+				
+				
+
+
 				int retour(std::system(commande_python_csp(nom_instance).c_str()));
 				if (retour==0)
 				{
 					// Using fstream to get the file pointer in file
   					std::ifstream file(config::python_config::path_to_csp+"/"+config::python_config::path_solution+"/"+nom_instance+".json");
   					Json::Value actualJson;
-  					Json::Reader reader;
 
 					// Using the reader, we are parsing the json file
   					reader.parse(file, actualJson);

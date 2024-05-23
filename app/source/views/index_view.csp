@@ -5,7 +5,7 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,48 +23,178 @@
 	</head>
 
 	<body>
-		<div class="columns is-mobile is-centered has-text-centered is-hidden"  id="{%config::html::status_solve%}">
-			<div class="column" id="{%config::html::status_display%}">
-			</div>
+
+		<div class="tabs is-centered is-boxed is-medium">
+			<ul>
+				<li id="{% config::html::tab::config_search_tab %}">
+					<a>
+						<span class="icon"><i class="fa-solid fa-gear" aria-hidden="true"></i></span>
+						<span>Configurate your search</span>
+					</a>
+				</li>
+				<li id="{% config::html::tab::solution_tab %}">
+					<a>
+						
+						<span class="icon"><i class="fa-solid fa-suitcase" aria-hidden="true"></i></span>
+				    	<span>Vizualize your path</span>
+					</a>
+				</li>
+				
+  			</ul>
 		</div>
+
 		<div class="columns is-mobile is-centered has-text-centered">
-			<div class="column ">
-				<fieldset>
-					<p class="control">
-						<input type="file" id="{% config::html::input_csv_data %}" hidden />
-						<button class="button" type="button" id="{% config::html::button_csv_data %}">
-							<span class="icon is-small">
-								<i class="fas fa-upload"></i>
-							</span>
-							<span>select your instance to solve</span>
-						</button>
-					</p>
-				</fieldset>
-			</div>
-			<div class="column">
-				<p class="control">
-					<input type="file" id="{% config::html::input_solution_json %}" hidden />
-					<button class="button" type="button" id="{% config::html::button_solution_json %}">
-						<span class="icon is-small">
-							<i class="fas fa-upload"></i>
-						</span>
-						<span>select your solution to display</span>
-					</button>
-				</p>
-			</div>
-		</div>
-		<div class="columns is-mobile is-centered has-text-centered">
-			<div class="column is-four-fifths">
-				<div class="block">
-					<button  class="button is-hidden" id="{%config::html::button_download_solution%}"  >Download your solutions</button>
+			<div class="column is-half is-centered ">
+				<div class="notification  is-hidden has-text-centered " id="{%config::html::erreur_page%}">
+
 				</div>
-				<div class="block" id="{% config::html::div_solution_display %}">
+			</div>
+		</div>
+		
+		
+		<div class="columns is-mobile is-centered has-text-centered is-hidden" id="{%config::html::content_tab::search_config%}">
+			<div class="field is-bordered block">
+				<label class="label">Timeout Solver</label>
+				<div class="control">
+				  <input class="input" id="{%config::html::preference_recherche::timeout_solver%}" type="number" placeholder="Number" min="0" value="60" >
+				</div>
+				<p class="help">put the number of second for the timeout of the search</p>
+				<div class="columns">
+					<div class="column is-mobile is-centered has-text-centered">
+						<div class="box block">
+							<p>Preferences in term of trail</p>
+							
+							<label class="label">Nature</label>
+							<div class="control">
+							  <input class="input" id="{%config::html::preference_util::preference_nature%}" type="number" placeholder="Number" min="0" max="10" value="8">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+		
+							<label class="label">City</label>
+							<div class="control">
+							  <input class="input" id="{%config::html::preference_util::preference_ville%}" type="number" placeholder="Number" min="0" max="10"value="3">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+						
+							<label class="label">Elevation</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::preference_elevation%}" min="0" max="10" value="5">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+							
+							<label class="label">Forest</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::preference_foret%}" min="0" max="10" value="6">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+		
+							<label class="label">Lake</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::preference_lac%}" min="0" max="10" value="7">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+							
+							<label class="label">River</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::preference_riviere%}" min="0" max="10" value="8">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+							
+						</div>
+					</div>
+
+					<div class="column is-mobile is-centered has-text-centered">
+						<div class="block">
+							<label class="label">Distance Minimum</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::distance_Min%}" placeholder="Number" min="0" value="10">
+							</div>
+							<p class="help">put the number for the minimum distance you want to walk</p>
+							
+							<label class="label">Distance Maximum</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::distance_Max%}" placeholder="Number" min="0" value="150">
+							</div>
+							<p class="help">put the number for the maximum distance you want to walk</p>
+							
+							<label class="label">Budget Max</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::budget_Max%}" placeholder="Number" min="0" value="2000">
+							</div>
+							<p class="help">put the number of euros you want to spend max in this walk</p>
+							
+							<label class="label">Max Duration Of The Visit</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::max_temps_visite%}" placeholder="Number" min="0" value="3000">
+							</div>
+							<p class="help">put the number of second the duration of the walk must be at most</p>
+		
+
+							<label class="label">Number of Visite Min</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::nombre_visite_min%}" placeholder="Number" min="0" value="6">
+							</div>
+							<p class="help">put the number minimum Points of interest you want to visit</p>
+		
+							<label class="label">Number of Visite Max</label>
+							<div class="control">
+							  <input class="input" type="number" id="{%config::html::preference_util::nombre_visite_max%}" placeholder="Number" min="0" value="20">
+							</div>
+							<p class="help">put the number maximum Points of interest you want to visit</p>
+							
+						</div>
+					</div>
+					
+				</div>
+				<div class="block">
+					<button class="button" id="{%config::html::button_check_parameters%}">Check the parameters</button>
 				</div>
 				
 			</div>
-			
 		</div>
+		<div id="{%config::html::content_tab::vizualize_solution%}">
+			<div class="columns is-mobile is-centered has-text-centered is-hidden"  id="{%config::html::status_solve%}">
+				<div class="column" id="{%config::html::status_display%}">
+				</div>
+			</div>
+			<div class="columns is-mobile is-centered has-text-centered">
+				<div class="column ">
+					<fieldset>
+						<p class="control">
+							<input type="file" id="{% config::html::input_csv_data %}" hidden />
+							<button class="button" type="button" id="{% config::html::button_csv_data %}">
+								<span class="icon is-small">
+									<i class="fas fa-upload"></i>
+								</span>
+								<span>select your instance to solve</span>
+							</button>
+						</p>
+					</fieldset>
+				</div>
+				<div class="column">
+					<p class="control">
+						<input type="file" id="{% config::html::input_solution_json %}" hidden />
+						<button class="button" type="button" id="{% config::html::button_solution_json %}">
+							<span class="icon is-small">
+								<i class="fas fa-upload"></i>
+							</span>
+							<span>select your solution to display</span>
+						</button>
+					</p>
+				</div>
+			</div>
+			<div class="columns is-mobile is-centered has-text-centered">
+				<div class="column is-four-fifths">
+					<div class="block">
+						<button  class="button is-hidden" id="{% config::html::button_download_solution %}"  >Download your solutions</button>
+					</div>
+					<div class="block" id="{% config::html::div_solution_display %}">
+					</div>
 
+				</div>
+
+			</div>
+		</div>
 		
 	</body>
 </html>
