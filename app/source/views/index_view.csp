@@ -142,6 +142,18 @@
 							</div>
 							<p class="help">put the number maximum Points of interest you want to visit</p>
 							
+							<label class="label">Points of interest interessement</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::poiInterresement%}" min="0" max="10" value="10">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+							
+							<label class="label">Preferences in trail</label>
+							<div class="control">
+							  <input class="input" type="number" placeholder="Number" id="{%config::html::preference_util::trailInterresement%}" min="0" max="10" value="10">
+							</div>
+							<p class="help">put the number between 0 and 10 in regard of your preferences</p>
+							
 						</div>
 					</div>
 					
@@ -152,7 +164,7 @@
 				
 			</div>
 		</div>
-		<div id="{%config::html::content_tab::vizualize_solution%}">
+		<div id="{%config::html::content_tab::vizualize_solution%}" class="is-hidden">
 			<div class="columns is-mobile is-centered has-text-centered is-hidden"  id="{%config::html::status_solve%}">
 				<div class="column" id="{%config::html::status_display%}">
 				</div>
@@ -187,6 +199,8 @@
 				<div class="column is-four-fifths">
 					<div class="block">
 						<button  class="button is-hidden" id="{% config::html::button_download_solution %}"  >Download your solutions</button>
+					</div>
+					<div class="block table-container" id="{% config::html::timeline_circuit %}">
 					</div>
 					<div class="block" id="{% config::html::div_solution_display %}">
 					</div>

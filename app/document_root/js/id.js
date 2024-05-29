@@ -53,6 +53,11 @@ export const id={
     //sert a mettre du texte ou une liste d'erreur
 	,status_display:"status_display"
 
+    //clé pour la sauvegarde de la tab selectionner
+    ,selected_tab:"selected_tab"
+
+    
+    ,html:{timeline_circuit:"timeline_circuit"}
     ,tab_id:
     {
         config_search_tab:"config_search_tab"
@@ -80,6 +85,8 @@ export const id={
         ,nombre_visite_min:"nombre_visite_min"
         ,nombre_visite_max:"nombre_visite_max"
         ,max_temps_visite:"max_temps_visite"
+        ,trailInterresement:"trailInterresement"
+        ,poiInterresement:"poiInterresement"
     }
     ,erreur_page:"erreur_page"
 }

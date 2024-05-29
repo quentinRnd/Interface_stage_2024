@@ -10,9 +10,9 @@
 /*
 fonction qui sert a retourner la commande utiliser pour executer le stricpt python qui résout les csp
 */
-std::string commande_python_csp(std::string const& nom_fichier_instance)
+std::string commande_python_csp(std::string const& nom_fichier_instance,std::string const& nom_fichier_settings)
 {
-	return "python3 "+config::python_config::path_to_csp+"/Modele4.py --f "+nom_fichier_instance;
+	return "python3 "+config::python_config::path_to_csp+"/Modele4.py --f "+nom_fichier_instance +" --s "+nom_fichier_settings;
 }
 
 void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::function<void(const drogon::HttpResponsePtr &)> && callback)
@@ -48,7 +48,6 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				Json::Reader reader;
 
 				reader.parse(req_parameter.find(config::json_response::formdataparameter)->second,parameter_json);
-				std::cout << parameter_json<< std::endl;
 				
 				std::ifstream settings_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_settings+"/"+config::python_config::settings_choose+".json");
   				std::ifstream profile_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_profil_marcheur+"/"+config::python_config::profil_choose+".json");
@@ -74,13 +73,19 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				profile_json[config::profile_marcheureuse::Temps_max_visite_key]=parameter_json[config::html::preference_util::max_temps_visite];
 				profile_json[config::profile_marcheureuse::Max_visite_pdi_key]=parameter_json[config::html::preference_util::nombre_visite_max];
 				profile_json[config::profile_marcheureuse::Min_visite_pdi_key]=parameter_json[config::html::preference_util::nombre_visite_min];
+				profile_json[config::profile_marcheureuse::poiInterresement]=parameter_json[config::profile_marcheureuse::poiInterresement];
+				profile_json[config::profile_marcheureuse::interet_chemin_key]=parameter_json[config::html::preference_util::trailInterresement];
+				
+
 
 				settings_json[config::settingsjson::inter_solution_key]=true;
 				settings_json[config::settingsjson::solution_algo_custom_key]=true;
 				settings_json[config::settingsjson::type_objectif_inter_solution]=config::settingsjson::Maximise_score_chemin;
 				settings_json[config::settingsjson::type_objectif_key]=config::settingsjson::Maximise_chemin_pdi;
 				settings_json[config::settingsjson::profile_marcheureuse_choisie_key]=nom_instance+".json";
-				
+				settings_json[config::settingsjson::timout_solution_inter_key]=parameter_json[config::html::preference_recherche::timeout_solver];
+				settings_json[config::settingsjson::Timeout_solver_key]=parameter_json[config::html::preference_recherche::timeout_solver];
+				settings_json[config::settingsjson::repertoire_solution_key]=config::python_config::path_solution;
 
 				
 
@@ -91,23 +96,29 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				profile_perso_file << profile_json;
 				
 				
+				profile_perso_file.close();
+				settings_perso_file.close();
 
+				/*
+				changer le lacement de pycsp3 pour qu'il prenne le settings personalisé
+				*/
 				
-				
 
 
-				int retour(std::system(commande_python_csp(nom_instance).c_str()));
+				int retour(std::system(commande_python_csp(nom_instance,nom_fichier_perso).c_str()));
 				if (retour==0)
 				{
+					std::string nom_fichier_solution(config::python_config::path_to_csp+"/"+config::python_config::path_solution+"/"+nom_instance+".json");
 					// Using fstream to get the file pointer in file
-  					std::ifstream file(config::python_config::path_to_csp+"/"+config::python_config::path_solution+"/"+nom_instance+".json");
+  					std::ifstream file(nom_fichier_solution);
   					Json::Value actualJson;
 
 					// Using the reader, we are parsing the json file
   					reader.parse(file, actualJson);
 					Json::FastWriter fastWriter;
 					json_response[config::json_response::key_json_solution]=actualJson;
-
+					file.close();
+					std::remove(nom_fichier_solution.c_str());
 					//json_response[config::json_response::key_json_solution].append(config::error::error_no_file);
 				}
 				else{

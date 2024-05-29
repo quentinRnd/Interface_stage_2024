@@ -64,6 +64,12 @@ namespace config
 		//sert a savoir le nombre de visite maximal par jour 
 		const std::string Min_visite_pdi_key("Min_visite_pdi");
 
+		//sert a mettre un score d'interressement sur les poi
+		const std::string poiInterresement("poiInterresement");
+
+		//sert a savoir l'interêt de l'utilisateur.ice envers les chemin 
+		const std::string interet_chemin_key("interet_chemin");
+
 	}
 
 	namespace settingsjson{
@@ -86,6 +92,15 @@ namespace config
 
 		const std::string type_objectif_inter_solution("type_objectif_inter_solution");
 
+
+		//sert a savoir quelle était le temps de timout au moment de la résolution
+		const std::string Timeout_solver_key("timeout_solver");
+
+		//clé pour le timeout des solution intermediaire 
+		const std::string timout_solution_inter_key("timout_solution_inter");
+
+		//repertoire dans lequel sont stocker les solutions 
+		const std::string repertoire_solution_key("repertoire_solution");
 	}
 
 	namespace error
@@ -144,6 +159,7 @@ namespace config
 		//sert a afficher des erreurs 
 		const std::string erreur_page("erreur_page");
 		
+		const std::string timeline_circuit("timeline_circuit");
 
 		namespace content_tab {
 			//configuration de la recherche, permet de retirer ou de mettre cette element en hidden 
@@ -164,6 +180,8 @@ namespace config
 		namespace preference_recherche{
 			//identifiant pour le timeout du solver
 			const std::string timeout_solver("timeout_solver");
+
+
 			
 		}
 		namespace preference_util{
@@ -202,6 +220,12 @@ namespace config
 			
 			//identifiant pour nombre de visite Max
 			const std::string max_temps_visite("max_temps_visite");
+
+			//id html pour savoir quelle sont les préférence en terme de nature
+			const std::string poiInterresement("poiInterresement");
+
+			//id html pour savoir quelle sont les préférence en terme de nature
+			const std::string trailInterresement("trailInterresement");
 			
 		}
 
