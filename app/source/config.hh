@@ -73,9 +73,6 @@ namespace config
 	}
 
 	namespace settingsjson{
-		//sert a savoir si on utilise l'algo custom pour résoudre les temps des chemins
-		const std::string solution_algo_custom_key("solution_algo_custom");
-
 		//clé permettant de savoir si on génère des solution intermediaire ou pas 
 		const std::string inter_solution_key("inter_solution");
 
@@ -98,14 +95,25 @@ namespace config
 
 		//clé pour le timeout des solution intermediaire 
 		const std::string timout_solution_inter_key("timout_solution_inter");
+		const std::string timout_solution_custom_key("timout_solution_custom");
 
+		//sert a indiquer a retrouver le parametre des solution custom
+		const std::string solution_algo_custom_key("solution_algo_custom");
 		//repertoire dans lequel sont stocker les solutions 
 		const std::string repertoire_solution_key("repertoire_solution");
+
+		const bool inter_solution(true);
+		const bool solution_custom(true);
+
 	}
 
 	namespace error
 	{
 		const std::string error_no_file("error no file provided by the request");
+	}
+	namespace json_request{
+		// execute the exemple 
+		const std::string execute_exemple("execute_exemple");
 	}
 	namespace json_response
 	{
@@ -117,6 +125,10 @@ namespace config
 		// id to put in the formdata the different parameters of the modele
      	const std::string formdataparameter("parameters");
 
+		// 
+		const std::string exemple_response("exemple_response");
+
+
 	}
 
 	// Strings used in HTML
@@ -125,6 +137,13 @@ namespace config
 		// Ajax request
 		const std::string ajax_request("ajax_request");
 
+		// requête des exemple du projet
+		const std::string exemple_request("exemple_request");
+
+		// repertoire ou sont stocker les exemple
+		const std::string path_to_exemple("Instance_exemple");
+
+		
 		//input file fore the csv download
 		const std::string input_csv_data("input_csv_data");
 		//button to trigger the csv input file
@@ -160,6 +179,14 @@ namespace config
 		const std::string erreur_page("erreur_page");
 		
 		const std::string timeline_circuit("timeline_circuit");
+
+		const std::string button_loading("button_loading");
+
+		const std::string select_exemple("select_exemple");
+
+		const std::string button_loading_exemple("button_loading_exemple");
+		
+
 
 		namespace content_tab {
 			//configuration de la recherche, permet de retirer ou de mettre cette element en hidden 

@@ -172,7 +172,7 @@
 			<div class="columns is-mobile is-centered has-text-centered">
 				<div class="column ">
 					<fieldset>
-						<p class="control">
+						<div class="control">
 							<input type="file" id="{% config::html::input_csv_data %}" hidden />
 							<button class="button" type="button" id="{% config::html::button_csv_data %}">
 								<span class="icon is-small">
@@ -180,11 +180,11 @@
 								</span>
 								<span>select your instance to solve</span>
 							</button>
-						</p>
+						</div>
 					</fieldset>
 				</div>
 				<div class="column">
-					<p class="control">
+					<div class="control">
 						<input type="file" id="{% config::html::input_solution_json %}" hidden />
 						<button class="button" type="button" id="{% config::html::button_solution_json %}">
 							<span class="icon is-small">
@@ -192,9 +192,36 @@
 							</span>
 							<span>select your solution to display</span>
 						</button>
-					</p>
+					</div>
+				</div>
+				<div class="column">
+					<div class="columns is-gapless" >
+						<div class="column ">
+							<div class="select  ">
+								<select id="{% config::html::select_exemple %}">
+								</select>
+							</div>
+						</div>
+						<div class="column">
+							<div class="control ">
+								<button class="button" type="button" id="{% config::html::button_loading_exemple %}">
+									<span>load your exemple</span>
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
+			<div class="notification is-warning is-hidden" id="{% config::html::button_loading %}">
+				<div class="columns is-mobile is-centered has-text-centered" >
+					<div class="column">
+						<div class="block control " >
+							<p >Solution is loading</p>
+							<button class="button is-loading is-large"></button>
+						</div>
+					</div>
+				</div>		
+			</div>	
 			<div class="columns is-mobile is-centered has-text-centered">
 				<div class="column is-four-fifths">
 					<div class="block">

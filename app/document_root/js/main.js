@@ -94,13 +94,16 @@ function draw_timeline(dataJson) {
 function draw_exemple(dataJson) {
 	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
 	let solution=dataJson[id.key_json_solution]
-	draw_timeline(dataJson)
 	if(solution == null)
 	{
 		//sortie de la fonction il n'y a pas de solution dans le json 
 		add_information(errors.no_solution,information.error)
+		sessionStorage.removeItem(id.stockage_solution_session)
 		return ;	
 	}
+	
+	draw_timeline(dataJson)
+	document.getElementById(id.button_download_solution).classList.remove("is-hidden")
 	//solution que l'on choisie de montrer a l'utilisateur.ice
 	let solution_proposer=solution[id.Solutions_key][solution[id.Solutions_key].length-1]	
 	
@@ -119,12 +122,21 @@ function draw_exemple(dataJson) {
 
 	let presence_pdi=solution_proposer[id.Presence_pdi_key]
 
+	let score_pdi=solution[id.instance_json.instance_data_key][id.instance_json.Score_pdi_key]
+	
 	//sert a aerer le graphe
 	let scale=9
 
 	for(let i=0;i<solution[id.Coordonee_pdi_x_key].length;++i)
 	{
-		nodes_data.push({id:`PDI ${i}`,x:data_x[i]*scale,y:data_y[i]*scale,visiter:presence_pdi[i],start:depart[i],group:1})
+		nodes_data.push({
+			id:`PDI ${i}`
+			,x:data_x[i]*scale
+			,y:data_y[i]*scale
+			,score:score_pdi[i]
+			,visiter:presence_pdi[i]
+			,start:depart[i]
+			,group:1})
 	}
 	
 	// circuit des pdi	
@@ -140,7 +152,7 @@ function draw_exemple(dataJson) {
 	let node_start=circuit[0][0]
 	let node_end=circuit[0][0]
 
-	
+	let valuation_chemin=solution[id.instance_json.instance_data_key][id.instance_json.Categorie_chemin_pdi_key]
 
 	for (let i = 0; i < circuit.length; i++) {
 		if(depart[node_start]>depart[circuit[i][0]])
@@ -151,7 +163,12 @@ function draw_exemple(dataJson) {
 		{
 			node_end=circuit[i][0]
 		}
-		links_data.push({source:nodes_data[circuit[i][0]].id,distance:Math.sqrt(Math.pow(nodes_data[circuit[i][0]].x-nodes_data[circuit[i][1]].x,2)+Math.pow(nodes_data[circuit[i][0]].y-nodes_data[circuit[i][1]].y,2)),target:nodes_data[circuit[i][1]].id,value:2})
+		let start=circuit[i][0]
+		let end =circuit[i][1]
+		links_data.push({source:nodes_data[circuit[i][0]].id
+			,title:`nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n elevation ${valuation_chemin[start][end][2]}\n forest ${valuation_chemin[start][end][3]}\n lake ${valuation_chemin[start][end][3]}\n river ${valuation_chemin[start][end][4]}`
+			,distance:Math.sqrt(Math.pow(nodes_data[circuit[i][0]].x-nodes_data[circuit[i][1]].x,2)+Math.pow(nodes_data[circuit[i][0]].y-nodes_data[circuit[i][1]].y,2))
+			,target:nodes_data[circuit[i][1]].id,value:2})
 		
 		if(presence_pdi[circuit[i][1]])
 		{
@@ -162,11 +179,8 @@ function draw_exemple(dataJson) {
 
 	}
 
-	console.log(node_start,nodes_data.length)
 	nodes_data[node_end].group=2
 	nodes_data[node_start].group=3
-
-	console.log(nodes_data,"\n",links_data)
 	
 	
 	let data={
@@ -210,8 +224,7 @@ function draw_exemple(dataJson) {
 	.attr("stroke-width", d => 5);
 
 	  link.append("title")
-      .text(d => "llalaalalal");
-	  console.log("llalal")
+      .text(d => d.title);
 
 
 	const node = svg.append("g")
@@ -224,7 +237,7 @@ function draw_exemple(dataJson) {
       .attr("fill", d => color(d.group));
 
   node.append("title")
-      .text(d => d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} `);
+      .text(d => d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}`);
 
   // Add a drag behavior.
   node.call(d3.drag()
@@ -335,155 +348,9 @@ function add_information(erreur,information_type,id_erreur=null)
 	setTimeout(()=>remove_information(id_erreur,information_type), 10000)
 
 }
-// This method is responsible for drawing the graph, returns the drawn network
-function drawGraph(dataJson) {
-	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
-	
-	
-	let solution=dataJson[id.key_json_solution] 
-	
-	console.log(dataJson)
-	if(solution == null)
-	{
-		add_information(errors.no_solution,information.error)
-		return ;	
-	}
-
-	//offre la possibilitée de telecharger le json solution
-	document.getElementById(id.button_download_solution).classList.remove("is-hidden")
-	
-	let solution_proposer=solution[id.Solutions_key][solution[id.Solutions_key].length-1]	
-	
-	
-	
-	let data_x=solution[id.Coordonee_pdi_x_key]
-	let data_y=solution[id.Coordonee_pdi_y_key]
-	let depart=solution_proposer[id.Start_pdi_key]
-	let taille_rayon=20
-	let circuit =solution_proposer[id.Circuit_key]
-	let presence_pdi=solution_proposer[id.Presence_pdi_key]
-	let width=0
-	let height=0
-
-	console.log(solution)
-
-	// ces offset serve pour les graphe avec des valeurs négative
-	let offsetx=0
-	let offsety=0
-	//les deucx variable servent a savoir quelle sont les départ et l'arriver du graphe pour les colorier d'une autre manièreS
-	let depart_circuit=circuit[0][0]
-	let arriver_circuit=circuit[0][0]
-
-	for(let i=0;i<circuit.length;++i)
-	{
-		if(depart[depart_circuit]>depart[circuit[i][0]])
-		{
-			depart_circuit=circuit[i][0]
-		}
-		if(depart[arriver_circuit]<depart[circuit[i][0]])
-		{
-			arriver_circuit=circuit[i][0]
-		}
-	}
-
-	for (let i=0;i<data_x.length;++i)
-	{
-		if(data_x[i]<offsetx)
-		{
-			offsetx=data_x[i]
-		}
-		if(data_y[i]<offsety)
-		{
-			offsety=data_y[i]
-		}
-	}
-
-	offsetx= -offsetx 
-	offsety= -offsety
-	let offsetdefault=20
-	offsetx+= offsetdefault
-	offsety+= offsetdefault
-	//sert a scale la figure pour mieux voire les donnée
-	let scale=20
-
-	for(let i=0;i<data_x.length;++i)
-	{
-		data_x[i]+=offsetx
-		data_y[i]+=offsety
-
-		data_x[i]*=scale
-		data_y[i]*=scale
-
-	}
-
-	for(let i=0;i<data_x.length;++i)
-	{
-		if(data_x[i]>width)
-		{
-			width=data_x[i]
-		}
-		if(data_y[i]>height)
-		{
-			height=data_y[i]
-		}
-
-	}
-	/*var svg = d3.select("#"+id.div_solution_display).append("svg")
-            .attr("width", width+100)
-            .attr("height", height+100)
-            .style('background-color', 'lightgrey')*/
-	var svg = d3.select("#"+id.div_solution_display).append("svg")
-		.attr('viewBox',`0 0 ${width+50} ${height+50}` )
-        .attr('preserveAspectRatio','xMinYMin')
-		.style('background-color', 'lightgrey');
-	
-	
-	for(let i=0;i<circuit.length;++i)
-	{
-		let k=circuit[i][0]
-		let j=circuit[i][1]
-		
-		// Add the path using this helper function
-		
-		svg.append('line')
-		.attr('x1', data_x[k])
-		.attr('y1', data_y[k])
-		.attr('x2', data_x[j])
-		.attr('y2', data_y[j])
-		.attr('stroke', 'black')
-	}
-	for(let i=0;i<data_x.length;++i)
-	{		
-		let x=data_x[i]
-		let y=data_y[i]
-
-		svg.append("circle")
-		.attr("cx",x )
-		.attr("cy", y)
-		.attr("opacity", 0.5)
-		.attr("fill", (i==depart_circuit?"green":(i==arriver_circuit?"red":(presence_pdi[i]?"blue":"white"))))
-		.attr("r", taille_rayon);
-		
-		svg.append("text")
-		.attr("x", x-5)
-		.attr("y", y+5)
-		.attr('stroke', 'black')
-  		.style("font-size", 19)
-  		.text(depart[i]);
-
-		  svg.append("text")
-		  .attr("x", x-(taille_rayon))
-		  .attr("y", y-taille_rayon)
-		  .attr('stroke', 'black')
-			.style("font-size", 19)
-			.text("PDI : "+i);
-	}
-}
 
 function display_solution(dataJson)
 {
-	console.log("display solution")
-	console.log(dataJson)
 	
 	var solution_display=document.getElementById(id.div_solution_display)
 	while(solution_display.hasChildNodes())
@@ -491,7 +358,9 @@ function display_solution(dataJson)
 		solution_display.removeChild(solution_display.firstChild)
 	}
 	//drawGraph(dataJson)
+	sendCsvAnimation()
 	draw_exemple(dataJson)
+	receiveCsvAnimation()
 
 }
 
@@ -568,8 +437,8 @@ function check_parametres()
 	return !error
 }
 
-function sendData(Formdata) {
-	
+function sendData(Formdata,type_send) {
+	console.log(Formdata,"\n",type_send)
 	fetch
 	(
 		id.root_url, 
@@ -586,8 +455,20 @@ function sendData(Formdata) {
 		
 		.then(response =>response.json().then(
 												data=> {
-													display_solution(data)
-													//console.log(data)
+													switch(type_send)
+													{
+														case id.ajax_file_csv:
+														case id.request_id.execute_exemple:
+														{
+															display_solution(data)
+															receiveCsvAnimation()		
+														}break;
+														case id.request_id.exemple_request:
+														{
+															update_exemple(data)	
+														}break;
+													}
+													
 						  								}
 											).catch(err=>console.log("error parsing the response json",err))
 			 )
@@ -601,6 +482,27 @@ function FormDataDefault()
 	formdata.append(id.ajax_request,true)
 	return formdata
 }
+
+function update_exemple(datajson)
+{
+	let select =document.getElementById(id.select_exemple);
+	while(select.firstChild)
+	{
+		select.removeChild(select.firstChild)
+	}
+	let exemple=datajson[id.response_id.exemple_response]
+	exemple.sort((a,b)=>a>b)
+	for(let i=0;i<exemple.length;++i)
+	{
+		let option=document.createElement("option")
+		let nom_instance=exemple[i].replace(/\.[^/.]+$/, "")
+		option.textContent=nom_instance
+		option.setAttribute("name",nom_instance)
+		select.appendChild(option)
+		
+	}
+}
+
 //thing to do when you send a csv to solve
 function sendCsvAnimation()
 {
@@ -614,7 +516,44 @@ function sendCsvAnimation()
 	}
 	document.getElementById(id.status_solve).classList.add("is-hidden")
 	document.getElementById(id.html.timeline_circuit).classList.add("is-hidden")
+	document.getElementById(id.button_csv_data).setAttribute("disabled","true")
+	document.getElementById(id.button_solution_json).setAttribute("disabled","true")
+	document.getElementById(id.button_loading_exemple).setAttribute("disabled","true")
+	document.getElementById(id.button.button_loading).classList.remove("is-hidden")
 
+
+}
+function receiveCsvAnimation()
+{
+	document.getElementById(id.button_csv_data).removeAttribute("disabled")
+	document.getElementById(id.button_solution_json).removeAttribute("disabled")
+	document.getElementById(id.button.button_loading).classList.add("is-hidden")
+	document.getElementById(id.button_loading_exemple).removeAttribute("disabled","true")
+
+}
+
+function add_search_parameter(formData)
+{
+	let parameter={}
+	for(let param in id.search_parameter)
+	{
+		let value_param=Number.parseInt(document.getElementById(param).value)
+		switch(param)
+		{
+			case id.search_parameter.preference_elevation:
+			case id.search_parameter.preference_foret:
+			case id.search_parameter.preference_lac:
+			case id.search_parameter.preference_nature:
+			case id.search_parameter.preference_ville:
+			case id.search_parameter.preference_riviere:
+			{
+				value_param/=10
+			}break;
+		}
+		parameter[param]= value_param
+	}
+	console.log(parameter)
+	formData.append(id.formdataparameter,JSON.stringify(parameter) )
 }
 
 //event to trigger the load of an csv data by the user
@@ -629,15 +568,10 @@ document.getElementById(id.input_csv_data).addEventListener("change",(e)=>{
 		return 
 	}
 
-	let parameter={}
-	for(let param in id.search_parameter)
-	{
-		parameter[param]=Number.parseInt(document.getElementById(param).value) 
-	}
-	console.log(parameter)
-	formData.append(id.formdataparameter,JSON.stringify(parameter) )
+	add_search_parameter(formData)
 	sendCsvAnimation()
-	sendData(formData) 
+	sendData(formData,id.ajax_file_csv) 
+	
 
 })
 
@@ -678,13 +612,9 @@ document.getElementById(id.input_solution_json).addEventListener("change",(e)=>{
 		let json ={}
 
 		json[id.key_json_solution]=JSON.parse(read.result)
-		console.log("ici")
-		if(!json[id.key_json_solution] ==null)
-		{
-			sendCsvAnimation()	
-		}
-		//drawGraph(json)
+		sendCsvAnimation()	
 		draw_exemple(json)
+		receiveCsvAnimation()
 	}
 
 	//drawGraph(JSON.parse(file)) 
@@ -695,17 +625,39 @@ document.getElementById(id.button_solution_json).addEventListener("click",(e)=>{
 	document.getElementById(id.input_solution_json).click()
 })
 
+document.getElementById(id.button_loading_exemple).addEventListener("click",(e)=>{
+	let formData=FormDataDefault()
+	let select=document.getElementById(id.select_exemple)
+	let nom_exemple=select.value
+	formData.append(id.request_id.execute_exemple,nom_exemple)
+	if(!check_parametres())
+	{
+		return
+	}
+	add_search_parameter(formData)
+	sendCsvAnimation()
+	sendData(formData,id.request_id.execute_exemple)
+})
+
+function refresh_exemple()
+{
+	let formData=FormDataDefault()
+	formData.append(id.request_id.exemple_request,true)
+	sendData(formData,id.request_id.exemple_request)	
+}
+
 function onload()
 {
+	refresh_exemple()
 	var solution=sessionStorage.getItem(id.stockage_solution_session)
 	if(solution!=null)
 	{
 		sendCsvAnimation()
 		let json =JSON.parse(solution)
 		console.log(json)
-		//drawGraph(json)
+		sendCsvAnimation()
 		draw_exemple(json)
-		console.log()
+		receiveCsvAnimation()
 	}
 
 	

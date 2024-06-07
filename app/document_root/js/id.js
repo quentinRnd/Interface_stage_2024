@@ -58,6 +58,13 @@ export const id={
 
     
     ,html:{timeline_circuit:"timeline_circuit"}
+    ,instance_json:{
+        instance_data_key:"instance_data"
+        //sert a savoir dans quelle catégorie sont les chemins entre les pdi
+        ,Categorie_chemin_pdi_key:"Categorie_chemin_pdi"
+        //cle pour les score des pdi 
+        ,Score_pdi_key:"Score_pdi"
+    }
     ,tab_id:
     {
         config_search_tab:"config_search_tab"
@@ -68,9 +75,22 @@ export const id={
         search_config:"search_config"
         ,vizualize_solution:"vizualize_solution"
     }
+    ,button:
+    {
+        button_loading:"button_loading"
+    }
+
+    ,request_id:{
+        exemple_request:"exemple_request"
+        ,execute_exemple:"execute_exemple"
+    }
+    ,response_id:{
+        exemple_response:"exemple_response"
+    }
+    ,select_exemple:"select_exemple"
 
     ,button_check_parameters:"button_check_parameters"
-
+    ,button_loading_exemple:"button_loading_exemple"
     ,search_parameter:{
         preference_nature:"preference_nature"
         ,preference_ville:"preference_ville"

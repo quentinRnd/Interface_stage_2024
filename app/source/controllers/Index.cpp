@@ -7,6 +7,8 @@
 #include<json/value.h>
 #include<json/json.h>
 
+#include<filesystem>
+
 /*
 fonction qui sert a retourner la commande utiliser pour executer le stricpt python qui résout les csp
 */
@@ -25,20 +27,35 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 	//on regarde si la requête que l'on reçois est une requête json 
 	if(req_parameter.find(config::html::ajax_request)!=req_parameter.end())
 	{
-		drogon::HttpResponsePtr resp(nullptr);
 		Json::Value json_response;
-		if(req_parameter.find(config::html::ajax_file_csv)!=req_parameter.end())
+		if(req_parameter.find(config::html::ajax_file_csv)!=req_parameter.end() || req_parameter.find(config::json_request::execute_exemple)!=req_parameter.end())
 		{
 			// on est dans le cas ou on a reçu un fichier csv
 			std::vector<drogon::HttpFile> files( req_multi_part.getFiles());
-			if(files.size()!=1)
+			//sert a savoir si on est dans le cas ou on charge un exemple 
+			bool charge_instance(req_parameter.find(config::json_request::execute_exemple)!=req_parameter.end());
+			if(files.size()!=1 && !charge_instance)
 			{
 				json_response[config::json_response::key_error_array].append(config::error::error_no_file);
 				//erreur il ne peut y avoir que un fichier
 				
 			}else{
 				std::string nom_instance(req->session()->sessionId());
+				if(charge_instance)
+				{
+					std::string nomfichier_src(config::python_config::path_to_csp+"/"+config::html::path_to_exemple+"/"+req_parameter.find(config::json_request::execute_exemple)->second+".json")
+								,nomfichier_dest(config::python_config::path_to_csp+"/"+config::python_config::path_instance+"/"+nom_instance+".json");
+					
+					std::ifstream  src(nomfichier_src, std::ios::binary);
+    				std::ofstream  dst(nomfichier_dest,   std::ios::binary);
+
+    				dst << src.rdbuf();
+					src.close();
+					dst.close();
+					
+				}else{
 				files.front().saveAs("./"+config::python_config::path_to_csp+"/"+config::python_config::path_instance+"/"+nom_instance+".json");
+				}
 				
 				/*
 				modifier les paramètre de recherche en fonction des utilisateurs.ices
@@ -48,7 +65,6 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				Json::Reader reader;
 
 				reader.parse(req_parameter.find(config::json_response::formdataparameter)->second,parameter_json);
-				
 				std::ifstream settings_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_settings+"/"+config::python_config::settings_choose+".json");
   				std::ifstream profile_default_file(config::python_config::path_to_csp+"/"+config::python_config::path_profil_marcheur+"/"+config::python_config::profil_choose+".json");
   				
@@ -78,14 +94,15 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				
 
 
-				settings_json[config::settingsjson::inter_solution_key]=true;
-				settings_json[config::settingsjson::solution_algo_custom_key]=true;
 				settings_json[config::settingsjson::type_objectif_inter_solution]=config::settingsjson::Maximise_score_chemin;
 				settings_json[config::settingsjson::type_objectif_key]=config::settingsjson::Maximise_chemin_pdi;
 				settings_json[config::settingsjson::profile_marcheureuse_choisie_key]=nom_instance+".json";
 				settings_json[config::settingsjson::timout_solution_inter_key]=parameter_json[config::html::preference_recherche::timeout_solver];
+				settings_json[config::settingsjson::timout_solution_custom_key]=parameter_json[config::html::preference_recherche::timeout_solver];
 				settings_json[config::settingsjson::Timeout_solver_key]=parameter_json[config::html::preference_recherche::timeout_solver];
 				settings_json[config::settingsjson::repertoire_solution_key]=config::python_config::path_solution;
+				settings_json[config::settingsjson::solution_algo_custom_key]=config::settingsjson::solution_custom;
+				settings_json[config::settingsjson::inter_solution_key]=config::settingsjson::inter_solution;
 
 				
 
@@ -103,7 +120,7 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				changer le lacement de pycsp3 pour qu'il prenne le settings personalisé
 				*/
 				
-
+				
 
 				int retour(std::system(commande_python_csp(nom_instance,nom_fichier_perso).c_str()));
 				if (retour==0)
@@ -129,6 +146,20 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				}
 			}
 		}
+
+		if(req_parameter.find(config::html::exemple_request)!=req_parameter.end())
+		{
+			std::filesystem::path path;
+			std::string file_name;
+			std::vector<std::string> exemple;
+			for (std::filesystem::directory_entry directory: std::filesystem::directory_iterator(config::python_config::path_to_csp+"/"+config::html::path_to_exemple))
+			{
+				path = directory.path();
+				exemple.push_back(path.filename());
+				json_response[config::json_response::exemple_response].append(path.filename().c_str());
+			}
+		}
+
 		callback(drogon::HttpResponse::newHttpJsonResponse(json_response));
 
 	}else{
