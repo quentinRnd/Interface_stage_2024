@@ -184,14 +184,29 @@
 					</fieldset>
 				</div>
 				<div class="column">
-					<div class="control">
-						<input type="file" id="{% config::html::input_solution_json %}" hidden />
-						<button class="button" type="button" id="{% config::html::button_solution_json %}">
-							<span class="icon is-small">
-								<i class="fas fa-upload"></i>
-							</span>
-							<span>select your solution to display</span>
-						</button>
+					<div class="columns is-mobile">
+						<div class="column">
+							<div class="control">
+								<input type="file" id="{% config::html::input_solution_json %}" hidden />
+								<button class="button" type="button" id="{% config::html::button_solution_json %}">
+									<span class="icon is-small">
+										<i class="fas fa-upload"></i>
+									</span>
+									<span>select your solution to display</span>
+								</button>
+							</div>
+						</div>
+						<div class="column">
+							<div class="control">
+								<input type="file" id="{% config::html::file::file_display_instance %}" hidden />
+								<button class="button" type="button" id="{% config::html::button::input_display_instance %}">
+									<span class="icon is-small">
+										<i class="fas fa-upload"></i>
+									</span>
+									<span>select your instance to display</span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="column">
@@ -205,7 +220,7 @@
 						<div class="column">
 							<div class="control ">
 								<button class="button" type="button" id="{% config::html::button_loading_exemple %}">
-									<span>load your exemple</span>
+									<span>solve your exemple</span>
 								</button>
 							</div>
 						</div>
@@ -222,11 +237,21 @@
 					</div>
 				</div>		
 			</div>	
-			<div class="columns is-mobile is-centered has-text-centered">
-				<div class="column is-four-fifths">
-					<div class="block">
-						<button  class="button is-hidden" id="{% config::html::button_download_solution %}"  >Download your solutions</button>
+			<div class="columns is-mobile is-centered has-text-centered " >
+				<div class="column ">
+					<div class="columns is-centered has-text-centered is-hidden  "id="{%config::html::solution_management%}" >
+						<div class="column is-one-fifth" >
+							<div class="block">
+								<button  class="button " id="{% config::html::button_download_solution %}"  >Download your solutions</button>
+							</div>
+							<div class="block">
+								<label class="label" for="{% config::html::input::input_zoom %}">Graph Zoom</label>
+								<input type="number"  class="input" id="{% config::html::input::input_zoom %}" min="1" value="5"  >
+								<p class="help">put a number superior to 0</p>
+							</div>
+						</div>
 					</div>
+					
 					<div class="block table-container" id="{% config::html::timeline_circuit %}">
 					</div>
 					<div class="block" id="{% config::html::div_solution_display %}">

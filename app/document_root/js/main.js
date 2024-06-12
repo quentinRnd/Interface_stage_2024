@@ -91,6 +91,83 @@ function draw_timeline(dataJson) {
 	//document.getElementById(id.html.timeline_circuit).classList.remove("is-hidden")
 }
 
+function draw_instance(dataJson)
+{
+	
+	sessionStorage.removeItem(id.stockage_solution_session)
+
+	if(dataJson==null)
+	{
+		//sortie de la fonction il n'y a pas de solution dans le json 
+		add_information(errors.instance_wrong,information.error)
+		return;
+	}
+	
+
+	let data_x=dataJson[id.instance_json.X_PDI]
+	let data_y=dataJson[id.instance_json.Y_PDI]
+
+	let nodes_data=[]
+
+	let score_pdi=dataJson[id.instance_json.Score_pdi]
+
+	//sert a aerer le graphe
+	let scale=sessionStorage.getItem(id.data_sessionstorage.stockage_scale)
+
+	for(let i=0;i<data_x.length;++i)
+	{
+		let d={
+			id:`PDI ${i}`
+			,x:data_x[i]*scale
+			,y:data_y[i]*scale
+			,score:score_pdi[i]
+			,group:1
+			,heure_ouverture:dataJson[id.instance_json.Heure_ouverture][i]
+			,heure_fermeture:dataJson[id.instance_json.Heure_fermeture][i]
+			,Cout_entrer:dataJson[id.instance_json.Cout_entrer][i]
+			,Temps_visite:dataJson[id.instance_json.Temps_visite][i]
+			
+			}
+		
+			d.title=d.id+` \n score ${d.score} \nheure ouverture ${d.heure_ouverture}\nheure fermeture ${d.heure_fermeture}\nCout entrer ${d.Cout_entrer}\nTemps visite ${d.Temps_visite}` 
+			nodes_data.push(d)
+	}
+	// les lien dans le graphe
+	let links_data=[]
+
+	let valuation_chemin=dataJson[id.instance_json.Categorie_chemin_pdi]
+
+	for(let i=0 ;i<data_x.length;++i)
+	{
+		for(let j=0 ;j<data_x.length;++j)
+		{
+			
+			let start=i
+			let end=j
+			if(valuation_chemin[start][end]!=null)
+			{
+				
+				
+				let distance=Math.sqrt(Math.pow(nodes_data[start].x-nodes_data[end].x,2)+Math.pow(nodes_data[start].y-nodes_data[end].y,2))
+				distance=Math.round(distance)
+				links_data.push({
+					source:nodes_data[start].id
+					,target:nodes_data[end].id
+					,value:2
+					,title:`distance ${distance}\n nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n elevation ${valuation_chemin[start][end][2]}\n forest ${valuation_chemin[start][end][3]}\n lake ${valuation_chemin[start][end][3]}\n river ${valuation_chemin[start][end][4]}`
+					}) 
+			}
+		}
+	}
+	let data={
+		nodes:nodes_data
+		,links:links_data
+	}
+	sessionStorage.setItem(id.data_sessionstorage.stockage_instance,JSON.stringify(dataJson))
+	document.getElementById(id.html.solution_management).classList.remove("is-hidden")
+	display_graph_data(data)
+}
+
 function draw_exemple(dataJson) {
 	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
 	let solution=dataJson[id.key_json_solution]
@@ -101,9 +178,10 @@ function draw_exemple(dataJson) {
 		sessionStorage.removeItem(id.stockage_solution_session)
 		return ;	
 	}
+	sessionStorage.removeItem(id.data_sessionstorage)
 	
 	draw_timeline(dataJson)
-	document.getElementById(id.button_download_solution).classList.remove("is-hidden")
+	document.getElementById(id.html.solution_management).classList.remove("is-hidden")
 	//solution que l'on choisie de montrer a l'utilisateur.ice
 	let solution_proposer=solution[id.Solutions_key][solution[id.Solutions_key].length-1]	
 	
@@ -112,8 +190,7 @@ function draw_exemple(dataJson) {
 	let data_x=solution[id.Coordonee_pdi_x_key]
 	let data_y=solution[id.Coordonee_pdi_y_key]
 
-	let width=1400
-	let height=1000
+	
 	
 	let nodes_data=[]
 
@@ -125,18 +202,22 @@ function draw_exemple(dataJson) {
 	let score_pdi=solution[id.instance_json.instance_data_key][id.instance_json.Score_pdi_key]
 	
 	//sert a aerer le graphe
-	let scale=9
+	let scale=sessionStorage.getItem(id.data_sessionstorage.stockage_scale)
 
 	for(let i=0;i<solution[id.Coordonee_pdi_x_key].length;++i)
 	{
-		nodes_data.push({
+		let d={
 			id:`PDI ${i}`
 			,x:data_x[i]*scale
 			,y:data_y[i]*scale
 			,score:score_pdi[i]
 			,visiter:presence_pdi[i]
 			,start:depart[i]
-			,group:1})
+			,group:1
+			}
+		
+			d.title=d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}`
+			nodes_data.push(d)
 	}
 	
 	// circuit des pdi	
@@ -165,9 +246,10 @@ function draw_exemple(dataJson) {
 		}
 		let start=circuit[i][0]
 		let end =circuit[i][1]
+		let distance=Math.sqrt(Math.pow(nodes_data[circuit[i][0]].x-nodes_data[circuit[i][1]].x,2)+Math.pow(nodes_data[circuit[i][0]].y-nodes_data[circuit[i][1]].y,2))
+		distance=Math.round(distance)
 		links_data.push({source:nodes_data[circuit[i][0]].id
-			,title:`nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n elevation ${valuation_chemin[start][end][2]}\n forest ${valuation_chemin[start][end][3]}\n lake ${valuation_chemin[start][end][3]}\n river ${valuation_chemin[start][end][4]}`
-			,distance:Math.sqrt(Math.pow(nodes_data[circuit[i][0]].x-nodes_data[circuit[i][1]].x,2)+Math.pow(nodes_data[circuit[i][0]].y-nodes_data[circuit[i][1]].y,2))
+			,title:`distance ${distance}\n nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n elevation ${valuation_chemin[start][end][2]}\n forest ${valuation_chemin[start][end][3]}\n lake ${valuation_chemin[start][end][3]}\n river ${valuation_chemin[start][end][4]}`
 			,target:nodes_data[circuit[i][1]].id,value:2})
 		
 		if(presence_pdi[circuit[i][1]])
@@ -188,6 +270,13 @@ function draw_exemple(dataJson) {
 		,links:links_data
 	}
 
+	display_graph_data(data)
+}
+
+function display_graph_data(data)
+{
+	let width=1400
+	let height=1000
 	// Specify the color scale.
 	const color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -237,7 +326,7 @@ function draw_exemple(dataJson) {
       .attr("fill", d => color(d.group));
 
   node.append("title")
-      .text(d => d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}`);
+      .text(d => d.title);
 
   // Add a drag behavior.
   node.call(d3.drag()
@@ -507,7 +596,7 @@ function update_exemple(datajson)
 function sendCsvAnimation()
 {
 
-	document.getElementById(id.button_download_solution).classList.add("is-hidden")
+	document.getElementById(id.html.solution_management).classList.add("is-hidden")
 
 	var solution_display=document.getElementById(id.div_solution_display)
 	while(solution_display.hasChildNodes())
@@ -519,6 +608,7 @@ function sendCsvAnimation()
 	document.getElementById(id.button_csv_data).setAttribute("disabled","true")
 	document.getElementById(id.button_solution_json).setAttribute("disabled","true")
 	document.getElementById(id.button_loading_exemple).setAttribute("disabled","true")
+	document.getElementById(id.button.input_display_instance).setAttribute("disabled","true")
 	document.getElementById(id.button.button_loading).classList.remove("is-hidden")
 
 
@@ -529,6 +619,7 @@ function receiveCsvAnimation()
 	document.getElementById(id.button_solution_json).removeAttribute("disabled")
 	document.getElementById(id.button.button_loading).classList.add("is-hidden")
 	document.getElementById(id.button_loading_exemple).removeAttribute("disabled","true")
+	document.getElementById(id.button.input_display_instance).removeAttribute("disabled")
 
 }
 
@@ -552,7 +643,7 @@ function add_search_parameter(formData)
 		}
 		parameter[param]= value_param
 	}
-	console.log(parameter)
+	
 	formData.append(id.formdataparameter,JSON.stringify(parameter) )
 }
 
@@ -594,9 +685,13 @@ document.getElementById(id.button_download_solution).addEventListener("click",(e
 	if(json!=null)
 	{
 		download(json,"solution.json","application/json")
-	}else{
-		//creer une erreur
 	}
+	json=sessionStorage.getItem(id.data_sessionstorage.stockage_instance)
+	if(json!=null)
+	{
+		download(json,"instance.json","application/json")
+	}
+
 })
 
 
@@ -620,9 +715,34 @@ document.getElementById(id.input_solution_json).addEventListener("change",(e)=>{
 	//drawGraph(JSON.parse(file)) 
 })
 
+
+document.getElementById(id.file.file_display_instance).addEventListener("change",(e)=>{
+	let file=e.target.files[0]
+    let read = new FileReader();
+
+	read.readAsBinaryString(file);
+
+	read.onloadend = function(){
+		let json ={}
+
+		json=JSON.parse(read.result)
+		sendCsvAnimation()	
+		draw_instance(json)
+		receiveCsvAnimation()
+	}
+
+	//drawGraph(JSON.parse(file)) 
+})
+
+
 //event to import solution json to display the solution
 document.getElementById(id.button_solution_json).addEventListener("click",(e)=>{
 	document.getElementById(id.input_solution_json).click()
+})
+
+//event to import solution json to display the solution
+document.getElementById(id.button.input_display_instance).addEventListener("click",(e)=>{
+	document.getElementById(id.file.file_display_instance).click()
 })
 
 document.getElementById(id.button_loading_exemple).addEventListener("click",(e)=>{
@@ -648,15 +768,24 @@ function refresh_exemple()
 
 function onload()
 {
+	sessionStorage.setItem(id.data_sessionstorage.stockage_scale,5)
 	refresh_exemple()
 	var solution=sessionStorage.getItem(id.stockage_solution_session)
 	if(solution!=null)
 	{
 		sendCsvAnimation()
 		let json =JSON.parse(solution)
-		console.log(json)
 		sendCsvAnimation()
 		draw_exemple(json)
+		receiveCsvAnimation()
+	}
+	var instance=sessionStorage.getItem(id.data_sessionstorage.stockage_instance)
+	if(instance!=null)
+	{
+		sendCsvAnimation()
+		let json =JSON.parse(instance)
+		sendCsvAnimation()
+		draw_instance(json)
 		receiveCsvAnimation()
 	}
 
@@ -676,6 +805,30 @@ function onload()
 	
 	document.getElementById(id.button_check_parameters).addEventListener("click",()=>{check_parametres()})
 
-
+	document.getElementById(id.input.input_zoom).addEventListener("change",()=>{
+		let input_zoom=document.getElementById(id.input.input_zoom)
+		let zoom=Number.parseInt(input_zoom.value) 
+		
+		if(Number.isInteger(zoom))
+		{
+			if(zoom>0)
+			{
+				sessionStorage.setItem(id.data_sessionstorage.stockage_scale,zoom)
+				if(sessionStorage.getItem(id.data_sessionstorage.stockage_instance)!=null)
+				{
+					sendCsvAnimation()
+					draw_instance(JSON.parse(sessionStorage.getItem(id.data_sessionstorage.stockage_instance)))
+					receiveCsvAnimation()
+				}
+				if(sessionStorage.getItem(id.stockage_solution_session)!=null)
+				{
+					sendCsvAnimation()
+					draw_exemple(JSON.parse(sessionStorage.getItem(id.stockage_solution_session)))
+					receiveCsvAnimation()
+				}
+			}
+			
+		}
+	})
 }
 onload()

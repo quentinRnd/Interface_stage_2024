@@ -4,4 +4,5 @@ export const errors={
     ,wrong_value_min_max:"these value must respect an order"
     ,all_good:"Your search parameter are correct"
     ,no_solution:"Your modele has no solution maybe try to change the search parameter"
+    ,instance_wrong:"Your instance has problem and connot be display"
 }

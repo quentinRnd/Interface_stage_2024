@@ -57,13 +57,36 @@ export const id={
     ,selected_tab:"selected_tab"
 
     
-    ,html:{timeline_circuit:"timeline_circuit"}
+    ,html:{
+        timeline_circuit:"timeline_circuit"
+        ,solution_management:"solution_management"
+    }
+    ,input:{
+        input_zoom:"input_zoom"
+    }
+    
+    ,data_sessionstorage:{
+        stockage_instance:"stockage_instance"
+        ,stockage_scale:"stockage_scale"
+    }
+
     ,instance_json:{
         instance_data_key:"instance_data"
         //sert a savoir dans quelle catégorie sont les chemins entre les pdi
         ,Categorie_chemin_pdi_key:"Categorie_chemin_pdi"
         //cle pour les score des pdi 
         ,Score_pdi_key:"Score_pdi"
+        
+        ,X_PDI:"X_PDI"
+        ,Y_PDI:"Y_PDI"
+        ,Score_pdi:"Score_pdi"
+        ,Temps_visite:"Temps_visite"
+        ,Cout_entrer:"Cout_entrer"
+        ,Heure_ouverture:"Heure_ouverture"
+        ,Heure_fermeture:"Heure_fermeture"
+        ,Categorie:"Categorie"
+        ,Capacite:"Capacite"
+        ,Categorie_chemin_pdi:"Categorie_chemin_pdi"
     }
     ,tab_id:
     {
@@ -78,6 +101,10 @@ export const id={
     ,button:
     {
         button_loading:"button_loading"
+        ,input_display_instance:"input_display_instance"
+    }
+    ,file:{
+        file_display_instance:"file_display_instance"
     }
 
     ,request_id:{
@@ -109,4 +136,5 @@ export const id={
         ,poiInterresement:"poiInterresement"
     }
     ,erreur_page:"erreur_page"
+    
 }

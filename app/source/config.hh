@@ -133,7 +133,10 @@ namespace config
 
 	// Strings used in HTML
 	namespace html
+
 	{
+		//sert a cacher le zoom de la map et le bouton download
+		const std::string solution_management("solution_management");
 		// Ajax request
 		const std::string ajax_request("ajax_request");
 
@@ -187,6 +190,9 @@ namespace config
 		const std::string button_loading_exemple("button_loading_exemple");
 		
 
+		namespace input{
+			const std::string input_zoom("input_zoom");
+		}
 
 		namespace content_tab {
 			//configuration de la recherche, permet de retirer ou de mettre cette element en hidden 
@@ -255,6 +261,15 @@ namespace config
 			const std::string trailInterresement("trailInterresement");
 			
 		}
+		namespace button
+		{
+			const std::string input_display_instance("input_display_instance");	
+		}
+		namespace file
+		{
+			const std::string file_display_instance("file_display_instance");
+		} 
+		
 
 		 
 	}
