@@ -69,7 +69,9 @@ export const id={
         stockage_instance:"stockage_instance"
         ,stockage_scale:"stockage_scale"
     }
-
+    ,solution_json:{
+        instance_data_key:"instance_data"
+    }
     ,instance_json:{
         instance_data_key:"instance_data"
         //sert a savoir dans quelle catégorie sont les chemins entre les pdi

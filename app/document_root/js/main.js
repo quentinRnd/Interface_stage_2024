@@ -25,6 +25,7 @@ function draw_timeline(dataJson) {
 
 	let table=document.createElement("table")
 	table.classList.add("table")
+	table.classList.add("is-fullwidth")
 	//table.classList.add("is-bordered")
 	
 
@@ -42,6 +43,9 @@ function draw_timeline(dataJson) {
 
 	let temps_visite=solution[id.Temps_visite_key]
 
+	let distance_circuit=0
+	let visite_circuit=0
+
 	for(let i=0;i< circuit.length;++i)
 	{
 		let pdi=circuit[i][0]
@@ -49,14 +53,24 @@ function draw_timeline(dataJson) {
 		content.push({text:`POI ${pdi}`,categorie:0})
 		if(presence_pdi[pdi])
 		{
-			content.push({text:`visiting during ${temps_visite[pdi]} minute`,categorie:1})
+			content.push({text:`visiting during ${temps_visite[pdi]} unit of time`,categorie:1})
 		}
-		content.push({text:`walk for ${parseInt( Math.sqrt(Math.pow(pdi_coord_x[circuit[i][0]]-pdi_coord_x[circuit[i][1]],2)+Math.pow(pdi_coord_y[circuit[i][0]]-pdi_coord_y[circuit[i][1]],2)))} meter`})
 
+		let distance=parseInt( Math.sqrt(Math.pow(pdi_coord_x[circuit[i][0]]-pdi_coord_x[circuit[i][1]],2)+Math.pow(pdi_coord_y[circuit[i][0]]-pdi_coord_y[circuit[i][1]],2)))
+
+		content.push({text:`walk for ${distance} unit of length`})
+
+		distance_circuit+=distance
+		visite_circuit+=temps_visite[pdi]
 	}
 	content.push({text:`Your trail is finish`,categorie:2})
 	
-	let head=[{text:"Your journey",weight:content.length},{text:`visiting ${presence_pdi.reduce((partialsum,a)=>partialsum+0+a)} pdi`,weight:content.length}]
+	let head=
+	[	{text:"Your journey",weight:content.length}
+		,{text:`visiting ${presence_pdi.reduce((partialsum,a)=>partialsum+0+a)} pdi`,weight:content.length}
+		,{text:`walking during ${distance_circuit} unit of length`,weight:content.length}
+		,{text:`visiting during ${visite_circuit} unit of time`,weight:content.length}
+	]
 	
 	let thead=document.createElement("thead")
 
@@ -190,7 +204,7 @@ function draw_exemple(dataJson) {
 	let data_x=solution[id.Coordonee_pdi_x_key]
 	let data_y=solution[id.Coordonee_pdi_y_key]
 
-	
+	let instance=solution[id.solution_json.instance_data_key	]
 	
 	let nodes_data=[]
 
@@ -214,9 +228,13 @@ function draw_exemple(dataJson) {
 			,visiter:presence_pdi[i]
 			,start:depart[i]
 			,group:1
+			,heure_ouverture:instance[id.instance_json.Heure_ouverture][i]
+			,heure_fermeture:instance[id.instance_json.Heure_fermeture][i]
+			,Cout_entrer:instance[id.instance_json.Cout_entrer][i]
+			,Temps_visite:instance[id.instance_json.Temps_visite][i]
 			}
 		
-			d.title=d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}`
+			d.title=d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}\nheure ouverture ${d.heure_ouverture}\nheure fermeture ${d.heure_fermeture}\nCout entrer ${d.Cout_entrer}\nTemps visite ${d.Temps_visite}`
 			nodes_data.push(d)
 	}
 	
@@ -278,8 +296,8 @@ function display_graph_data(data)
 	let width=1400
 	let height=1000
 	// Specify the color scale.
-	const color = d3.scaleOrdinal(d3.schemeCategory10);
-
+	//const color = d3.scaleOrdinal(d3.schemeCategory10);
+	const color=["red","orange","blue","black","cyan","yellow","limegreen"]
 	// The force simulation mutates links and nodes, so create a copy
   	// so that re-evaluating this cell produces the same result.
   	const links = data.links.map(d => ({...d}));
@@ -322,8 +340,8 @@ function display_graph_data(data)
     .selectAll()
     .data(nodes)
     .join("circle")
-      .attr("r", 10)
-      .attr("fill", d => color(d.group));
+      .attr("r", 13)
+      .attr("fill", d => color[d.group]);
 
   node.append("title")
       .text(d => d.title);
