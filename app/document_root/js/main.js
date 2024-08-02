@@ -46,6 +46,8 @@ function draw_timeline(dataJson) {
 	let distance_circuit=0
 	let visite_circuit=0
 
+	content.push({text:`Your trail begins`,categorie:2})
+
 	for(let i=0;i< circuit.length;++i)
 	{
 		let pdi=circuit[i][0]
@@ -108,7 +110,7 @@ function draw_timeline(dataJson) {
 function draw_instance(dataJson)
 {
 	
-	sessionStorage.removeItem(id.stockage_solution_session)
+	clean_session_storage(id.data_sessionstorage.stockage_instance)
 
 	if(dataJson==null)
 	{
@@ -182,7 +184,26 @@ function draw_instance(dataJson)
 	display_graph_data(data)
 }
 
+/*
+sert a retirer tout les element parasite de la session storage
+exemple les instances et les solution en json dans ce cas-ci
+*/
+function clean_session_storage(id_safe)
+{
+	//tableau contenant les chose de la session a retirer
+	let session_clean=[id.data_sessionstorage.stockage_instance,id.stockage_solution_session]
+	
+	session_clean.forEach((element)=>{
+		if(element!==id_safe)
+		{
+			sessionStorage.removeItem(element)
+		}
+	})
+}
+
+
 function draw_exemple(dataJson) {
+	clean_session_storage(id.stockage_solution_session)
 	sessionStorage.setItem(id.stockage_solution_session,JSON.stringify(dataJson))
 	let solution=dataJson[id.key_json_solution]
 	if(solution == null)
@@ -193,6 +214,7 @@ function draw_exemple(dataJson) {
 		return ;	
 	}
 	sessionStorage.removeItem(id.data_sessionstorage)
+	console.log(sessionStorage.getItem(id.data_sessionstorage))
 	
 	draw_timeline(dataJson)
 	document.getElementById(id.html.solution_management).classList.remove("is-hidden")

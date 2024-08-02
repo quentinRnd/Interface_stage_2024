@@ -252,14 +252,23 @@
 						</div>
 					</div>
 					
-					<div class="block table-container" id="{% config::html::timeline_circuit %}">
-					</div>
-					<div class="block" id="{% config::html::div_solution_display %}">
-					</div>
+					
 
 				</div>
 
 			</div>
+			<div class="columns is-mobile is-multiline is-centered has-text-centered " >
+				<div class="column is-full">
+					<div class="block table-container"  id="{% config::html::timeline_circuit %}">
+					</div>
+				</div>
+				<div class="column is-full">
+					<div class="block" id="{% config::html::div_solution_display %}">
+					</div>
+				</div>
+			</div>
+			
+			
 		</div>
 		
 	</body>
