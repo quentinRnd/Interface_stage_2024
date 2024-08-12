@@ -70,6 +70,10 @@ namespace config
 		//sert a savoir l'interêt de l'utilisateur.ice envers les chemin 
 		const std::string interet_chemin_key("interet_chemin");
 
+		//sert a savoir si on fixe le point de depart du graphe
+		const std::string point_depart_fixer("point_depart_activer");
+		
+
 	}
 
 	namespace settingsjson{

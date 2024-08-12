@@ -18,7 +18,7 @@ source .env
 if [ ! -d $THIRD_PARTY_REP/$NAME_CSP_REP ]; then
     mkdir -p $THIRD_PARTY_REP/$NAME_CSP_REP
 	cd $THIRD_PARTY_REP/$NAME_CSP_REP
-	git clone git@github.com:quentinRnd/Stage_Fac_2024.git
+	git clone https://github.com/quentinRnd/Stage_Fac_2024.git
 	cp -r ./Stage_Fac_2024/Instance_json/ ./Stage_Fac_2024/Instance_exemple
 	cd ../..
 fi

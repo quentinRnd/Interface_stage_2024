@@ -91,7 +91,7 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				profile_json[config::profile_marcheureuse::Min_visite_pdi_key]=parameter_json[config::html::preference_util::nombre_visite_min];
 				profile_json[config::profile_marcheureuse::poiInterresement]=parameter_json[config::profile_marcheureuse::poiInterresement];
 				profile_json[config::profile_marcheureuse::interet_chemin_key]=parameter_json[config::html::preference_util::trailInterresement];
-				
+				profile_json[config::profile_marcheureuse::point_depart_fixer]=false;
 
 
 				settings_json[config::settingsjson::type_objectif_inter_solution]=config::settingsjson::Maximise_score_chemin;

@@ -256,7 +256,7 @@ function draw_exemple(dataJson) {
 			,Temps_visite:instance[id.instance_json.Temps_visite][i]
 			}
 		
-			d.title=d.id+`\n visite time ${d.start} \n visite ${(d.visiter==0?"false":"true")} \n score ${d.score}\nheure ouverture ${d.heure_ouverture}\nheure fermeture ${d.heure_fermeture}\nCout entrer ${d.Cout_entrer}\nTemps visite ${d.Temps_visite}`
+			d.title=d.id+`\n Temps de visite ${d.start} \n Visite ${(d.visiter==0?"false":"true")} \n Score ${d.score}\nHeure ouverture ${d.heure_ouverture}\nHeure fermeture ${d.heure_fermeture}\nCoût entrée ${d.Cout_entrer}\nTemps visite ${d.Temps_visite}`
 			nodes_data.push(d)
 	}
 	
@@ -289,7 +289,7 @@ function draw_exemple(dataJson) {
 		let distance=Math.sqrt(Math.pow(nodes_data[circuit[i][0]].x-nodes_data[circuit[i][1]].x,2)+Math.pow(nodes_data[circuit[i][0]].y-nodes_data[circuit[i][1]].y,2))
 		distance=Math.round(distance)
 		links_data.push({source:nodes_data[circuit[i][0]].id
-			,title:`distance ${distance}\n nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n elevation ${valuation_chemin[start][end][2]}\n forest ${valuation_chemin[start][end][3]}\n lake ${valuation_chemin[start][end][3]}\n river ${valuation_chemin[start][end][4]}`
+			,title:`distance ${distance}\n nature ${valuation_chemin[start][end][0]}\n ville ${valuation_chemin[start][end][1]} \n élévation ${valuation_chemin[start][end][2]}\n forêt ${valuation_chemin[start][end][3]}\n lac ${valuation_chemin[start][end][3]}\n rivière ${valuation_chemin[start][end][4]}`
 			,target:nodes_data[circuit[i][1]].id,value:2})
 		
 		if(presence_pdi[circuit[i][1]])
