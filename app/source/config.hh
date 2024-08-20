@@ -80,6 +80,16 @@ namespace config
 		//clé permettant de savoir si on génère des solution intermediaire ou pas 
 		const std::string inter_solution_key("inter_solution");
 
+		//clé permettant de savoir combien de solution on génère 
+		const std::string nombre_solution_key("nombre_solution");
+
+		//clé permettant de savoir si le tiemout est activer 
+		const std::string timeout_actif_key("timeout_actif");
+
+		
+
+		
+
 		//fonction objectif
 		const std::string Maximise_score_chemin("Maximise_score_chemin");
 
@@ -107,6 +117,8 @@ namespace config
 		const std::string repertoire_solution_key("repertoire_solution");
 
 		const bool inter_solution(true);
+		const std::string nombre_solution_valeur("ALL");
+		const bool timeout_actif_valeur(true);
 		const bool solution_custom(true);
 
 	}

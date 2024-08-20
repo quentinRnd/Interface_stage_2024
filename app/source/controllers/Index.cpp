@@ -103,7 +103,8 @@ void Index::asyncHandleHttpRequest(const drogon::HttpRequestPtr & req, std::func
 				settings_json[config::settingsjson::repertoire_solution_key]=config::python_config::path_solution;
 				settings_json[config::settingsjson::solution_algo_custom_key]=config::settingsjson::solution_custom;
 				settings_json[config::settingsjson::inter_solution_key]=config::settingsjson::inter_solution;
-
+				settings_json[config::settingsjson::nombre_solution_key]=config::settingsjson::nombre_solution_valeur;
+				settings_json[config::settingsjson::timeout_actif_key]=config::settingsjson::timeout_actif_valeur;
 				
 
 				std::ofstream settings_perso_file(config::python_config::path_to_csp+"/"+config::python_config::path_settings+"/"+nom_fichier_perso,std::ios::trunc);
